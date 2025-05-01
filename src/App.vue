@@ -1,30 +1,42 @@
 <script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
+import Button from "./components/Button.vue";
+import Canvas from "./components/Canvas/index.vue";
+import PaletteSelector from "./components/PaletteSelector.vue";
 </script>
 
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+    <div class="app">
+        <h1>NPC</h1>
+        <p>Generate and export space invader themed logos, built with Vue.</p>
+        <div class="app__maker">
+            <div class="app__maker__panel">
+                <Canvas />
+            </div>
+            <div class="app__maker__panel">
+                <PaletteSelector />
+                <Button>sdf</Button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.app {
+    padding: 1rem;
+    max-width: 50rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+.app__maker {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding-top: 1rem;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+.app__maker__panel {
+    aspect-ratio: 1;
 }
 </style>
