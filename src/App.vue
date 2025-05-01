@@ -6,6 +6,8 @@ import { emitter } from "./store";
 import Checkbox from "./components/primitives/Checkbox.vue";
 import Input from "./components/primitives/Input.vue";
 import Discord from "./components/previews/Discord.vue";
+import Card from "./components/previews/Card.vue";
+import Footer from "./components/Footer.vue";
 </script>
 
 <template>
@@ -47,24 +49,18 @@ import Discord from "./components/previews/Discord.vue";
         </div>
         <div class="app__preview">
             <Discord />
-            <Discord />
-            <Discord />
+            <Card />
         </div>
+
+        <Footer />
     </div>
 </template>
 
 <style scoped>
 .app {
-    padding: 1rem;
+    padding: 0 1rem;
     max-width: 50rem;
     margin: 0 auto;
-}
-
-.app__preview {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
-    padding-top: 2rem;
 }
 
 .app__header {
@@ -91,7 +87,7 @@ import Discord from "./components/previews/Discord.vue";
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding-top: 0.25rem;
+    margin-top: 0.5rem;
 }
 
 .app__maker__panel__options div {
@@ -101,5 +97,12 @@ import Discord from "./components/previews/Discord.vue";
 
 .section {
     gap: 0.5rem;
+}
+
+.app__preview {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    padding-top: 1.5rem;
 }
 </style>

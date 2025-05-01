@@ -52,7 +52,7 @@ const bgColor = PALETTE.FILL
     height: 5rem;
     border-radius: 50%;
     transform: translateY(50%) translateX(1rem);
-    border: 0.3rem solid white;
+    outline: 0.3rem solid white;
     position: relative;
 }
 
@@ -100,11 +100,8 @@ const bgColor = PALETTE.FILL
     margin: 0;
 }
 
-.card__content_bio {
-}
-
 .card__content_bio a {
-    color: #007bff;
+    color: dodgerblue;
     text-decoration: none;
     font-size: 0.875rem;
 }

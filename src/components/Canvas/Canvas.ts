@@ -101,6 +101,8 @@ export class Canvas {
     resize() {
         this.canvas.width = this.renderSize;
         this.canvas.height = this.renderSize;
+        this.container.style.width = `${this.size}px`;
+        this.container.style.height = `${this.size}px`;
         this.canvas.style.width = `${this.size}px`;
         this.canvas.style.height = `${this.size}px`;
     }
