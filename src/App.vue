@@ -5,12 +5,14 @@ import PaletteSelector from "./components/PaletteSelector.vue";
 import { emitter } from "./store";
 import Checkbox from "./components/primitives/Checkbox.vue";
 import Input from "./components/primitives/Input.vue";
+import Avatar from "./components/Avatar.vue";
 </script>
 
 <template>
     <div class="app view">
         <h1 class="app__header">NPC</h1>
         <p>Generate and export space invader themed logos, built with Vue.</p>
+
         <div class="app__maker">
             <div>
                 <div class="app__maker__canvas">
@@ -19,8 +21,12 @@ import Input from "./components/primitives/Input.vue";
 
                 <div class="app__maker__panel__options view">
                     <div class="view">
-                        <Button @click="emitter.emit('randomizeCanvas')">Randomize</Button>
-                        <Button @click="emitter.emit('clearCanvas')">Clear</Button>
+                        <Button @click="emitter.emit('randomizeCanvas')"
+                            >Randomize</Button
+                        >
+                        <Button @click="emitter.emit('clearCanvas')"
+                            >Clear</Button
+                        >
                     </div>
                     <PaletteSelector />
                 </div>
@@ -34,13 +40,14 @@ import Input from "./components/primitives/Input.vue";
                 <Checkbox label="Export app icons" />
                 <Checkbox label="Export manifest.json" />
 
-                <Input label="Width" />
-                <Input label="Height" />
+                <Input label="Size" />
 
                 <Button>Export</Button>
             </div>
         </div>
     </div>
+
+
 </template>
 
 <style scoped>

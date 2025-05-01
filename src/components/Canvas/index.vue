@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import invariant from "tiny-invariant";
-import { onMounted, onUnmounted, ref, watchEffect } from "vue";
+import { onMounted, onUnmounted, ref, shallowRef, watchEffect } from "vue";
 import { Canvas } from "./Canvas";
 import { emitter, store } from "../../store";
 
 const canvas = ref<HTMLCanvasElement>();
-const canvasEngine = ref<Canvas>();
+const canvasEngine = shallowRef<Canvas>();
 
 const randomizeCanvas = () => {
     canvasEngine.value?.randomize();
@@ -28,11 +28,17 @@ onMounted(() => {
     canvasEngine.value = new Canvas({
         size: parentElement.offsetWidth,
         canvas: canvas.value,
+
+        updateGrid: (...args) => {
+            store.value.updateGrid(...args);
+        },
+        setGrid: (...args) => {
+            store.value.setGrid(...args);
+        },
     });
 
     emitter.on("randomizeCanvas", randomizeCanvas);
     emitter.on("clearCanvas", clearCanvas);
-
 });
 
 onUnmounted(() => {

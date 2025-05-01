@@ -1,8 +1,12 @@
 import invariant from "tiny-invariant";
+import type { Actions } from "../../store";
 
 type CanvasArgs = {
     size: number;
     canvas: HTMLCanvasElement;
+
+    setGrid: Actions["setGrid"];
+    updateGrid: Actions["updateGrid"];
 };
 
 export const SIZE = 10;
@@ -27,8 +31,13 @@ export class Canvas {
     private mouse = { x: 0, y: 0, hover: false, down: false };
     private currentColor = PALETTE.BACKGROUND;
 
-    constructor({ canvas }: CanvasArgs) {
+    private updateGrid: Actions["updateGrid"];
+    private setGrid: Actions["setGrid"];
+
+    constructor({ canvas, updateGrid, setGrid }: CanvasArgs) {
         this.canvas = canvas;
+        this.updateGrid = updateGrid;
+        this.setGrid = setGrid;
 
         const container = canvas.parentElement;
         invariant(container, "expected canvas parent");
@@ -46,6 +55,7 @@ export class Canvas {
 
         this.resize();
         this.grid = this.randomGrid();
+        this.setGrid(this.grid);
 
         this.render();
         this.mount();
@@ -59,22 +69,24 @@ export class Canvas {
         this.currentColor = nextCurrentColor;
     }
 
-    private createGrid() {
+    static createGrid(): PALETTE[][] {
         return new Array(SIZE)
             .fill(0)
             .map(() => new Array(SIZE).fill(PALETTE.BACKGROUND));
     }
 
     clear() {
-        this.grid = this.createGrid();
+        this.grid = Canvas.createGrid();
+        this.setGrid(this.grid);
     }
 
     randomize() {
         this.grid = this.randomGrid();
+        this.setGrid(this.grid);
     }
 
     randomGrid() {
-        const grid = this.createGrid();
+        const grid = Canvas.createGrid();
         for (let y = MARGIN; y < SIZE - MARGIN; y++) {
             for (let x = MARGIN; x < SIZE - MARGIN; x++) {
                 const color =
@@ -118,6 +130,7 @@ export class Canvas {
         if (this.mouse.down) {
             const { x, y } = this.mouseToGrid();
             this.grid[y][x] = this.currentColor;
+            this.updateGrid(x, y, this.currentColor);
         }
 
         this.animationId = requestAnimationFrame(this.render);
