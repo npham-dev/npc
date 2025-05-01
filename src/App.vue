@@ -5,7 +5,7 @@ import PaletteSelector from "./components/PaletteSelector.vue";
 import { emitter } from "./store";
 import Checkbox from "./components/primitives/Checkbox.vue";
 import Input from "./components/primitives/Input.vue";
-import Avatar from "./components/Avatar.vue";
+import Discord from "./components/previews/Discord.vue";
 </script>
 
 <template>
@@ -45,9 +45,12 @@ import Avatar from "./components/Avatar.vue";
                 <Button>Export</Button>
             </div>
         </div>
+        <div class="app__preview">
+            <Discord />
+            <Discord />
+            <Discord />
+        </div>
     </div>
-
-
 </template>
 
 <style scoped>
@@ -55,6 +58,13 @@ import Avatar from "./components/Avatar.vue";
     padding: 1rem;
     max-width: 50rem;
     margin: 0 auto;
+}
+
+.app__preview {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    padding-top: 2rem;
 }
 
 .app__header {

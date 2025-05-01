@@ -24,11 +24,11 @@ export const store = ref<State & Actions>({
     updateGrid: (x, y, color) => {
         // https://vuejs.org/guide/essentials/list.html#array-change-detection
         // will trigger reactivity and vue with diff the dom appropriately
-        store.value.grid = store.value.grid.map((row, rowY) => (
+        store.value.grid = store.value.grid.map((row, rowY) =>
             rowY === y
                 ? row.map((cell, cellX) => (cellX === x ? color : cell))
-                : row
-        ));
+                : row,
+        );
     },
     setCurrentColor: (nextCurrentColor) => {
         store.value.currentColor = nextCurrentColor;
