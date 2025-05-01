@@ -16,15 +16,29 @@ export enum PALETTE {
 }
 
 export class Canvas {
-    private size: number;
+    private container: HTMLElement;
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
+    private animationId: number | null = null;
 
+    private size: number;
     private grid: PALETTE[][];
 
-    constructor({ size, canvas }: CanvasArgs) {
-        this.size = size;
+    private mouse = { x: 0, y: 0, hover: false, down: false };
+    private currentColor = PALETTE.BACKGROUND;
+
+    constructor({ canvas }: CanvasArgs) {
         this.canvas = canvas;
+
+        const container = canvas.parentElement;
+        invariant(container, "expected canvas parent");
+        this.container = container;
+
+        invariant(
+            container.clientWidth === container.clientHeight,
+            "expected canvas to be square",
+        );
+        this.size = container.clientWidth;
 
         const ctx = this.canvas.getContext("2d");
         invariant(ctx, "expected canvas context");
@@ -34,12 +48,29 @@ export class Canvas {
         this.grid = this.randomGrid();
 
         this.render();
+        this.mount();
+    }
+
+    get renderSize() {
+        return this.size * SCALE;
+    }
+
+    setCurrentColor(nextCurrentColor: PALETTE) {
+        this.currentColor = nextCurrentColor;
     }
 
     private createGrid() {
         return new Array(SIZE)
             .fill(0)
             .map(() => new Array(SIZE).fill(PALETTE.BACKGROUND));
+    }
+
+    clear() {
+        this.grid = this.createGrid();
+    }
+
+    randomize() {
+        this.grid = this.randomGrid();
     }
 
     randomGrid() {
@@ -55,37 +86,113 @@ export class Canvas {
         return grid;
     }
 
-    get scaledSize() {
-        return this.size * SCALE;
-    }
-
     resize() {
-        this.canvas.width = this.scaledSize;
-        this.canvas.height = this.scaledSize;
+        this.canvas.width = this.renderSize;
+        this.canvas.height = this.renderSize;
         this.canvas.style.width = `${this.size}px`;
         this.canvas.style.height = `${this.size}px`;
     }
 
-    render() {
-        const cellSize = this.scaledSize / SIZE;
-
+    render = () => {
         // fill background
         this.ctx.fillStyle = PALETTE.BACKGROUND;
-        this.ctx.fillRect(0, 0, this.scaledSize, this.scaledSize);
+        this.ctx.fillRect(0, 0, this.renderSize, this.renderSize);
 
         // fill in cells
         this.ctx.fillStyle = PALETTE.FILL;
         for (let y = 0; y < SIZE; y++) {
             for (let x = 0; x < SIZE; x++) {
                 if (this.grid[y][x] === PALETTE.FILL) {
-                    this.ctx.fillRect(
-                        (x / SIZE) * this.scaledSize,
-                        (y / SIZE) * this.scaledSize,
-                        cellSize,
-                        cellSize,
-                    );
+                    this.drawCell(x, y);
                 }
             }
         }
+
+        if (this.mouse.hover) {
+            // get mouse pos on grid
+            const { x, y } = this.mouseToGrid();
+            this.ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+            this.drawCell(x, y);
+        }
+
+        if (this.mouse.down) {
+            const { x, y } = this.mouseToGrid();
+            this.grid[y][x] = this.currentColor;
+        }
+
+        this.animationId = requestAnimationFrame(this.render);
+    };
+
+    /** Utility to draw a specific cell */
+    private drawCell(x: number, y: number) {
+        const cellSize = this.renderSize / SIZE;
+        this.ctx.fillRect(
+            (x / SIZE) * this.renderSize,
+            (y / SIZE) * this.renderSize,
+            cellSize,
+            cellSize,
+        );
+    }
+
+    /** Convert mouse coords to grid indices  */
+    private mouseToGrid() {
+        const x = Math.floor((this.mouse.x / this.size) * SIZE);
+        const y = Math.floor((this.mouse.y / this.size) * SIZE);
+        return {
+            x: Math.max(Math.min(x, SIZE - 1), 0),
+            y: Math.max(Math.min(y, SIZE - 1), 0),
+        };
+    }
+
+    private getMousePos(e: MouseEvent) {
+        const bbox = this.container.getBoundingClientRect();
+        this.mouse.x = e.clientX - bbox.left;
+        this.mouse.y = e.clientY - bbox.top;
+    }
+
+    onMouseEnter = (e: MouseEvent) => {
+        this.getMousePos(e);
+        this.mouse.hover = true;
+    };
+
+    onMouseLeave = (e: MouseEvent) => {
+        this.getMousePos(e);
+        this.mouse.hover = false;
+        this.mouse.down = false;
+    };
+
+    onMouseMove = (e: MouseEvent) => {
+        this.getMousePos(e);
+    };
+
+    onMouseUp = (e: MouseEvent) => {
+        this.getMousePos(e);
+        this.mouse.down = false;
+    };
+
+    onMouseDown = (e: MouseEvent) => {
+        this.getMousePos(e);
+        this.mouse.down = true;
+    };
+
+    mount() {
+        this.canvas.addEventListener("mouseenter", this.onMouseEnter);
+        this.canvas.addEventListener("mouseleave", this.onMouseLeave);
+        this.canvas.addEventListener("mousemove", this.onMouseMove);
+        this.canvas.addEventListener("mousedown", this.onMouseDown);
+        this.canvas.addEventListener("mouseup", this.onMouseUp);
+    }
+
+    unmount() {
+        this.canvas.removeEventListener("mouseenter", this.onMouseEnter);
+        this.canvas.removeEventListener("mouseleave", this.onMouseLeave);
+        this.canvas.removeEventListener("mousemove", this.onMouseMove);
+        this.canvas.removeEventListener("click", this.onMouseMove);
+        this.canvas.addEventListener("mouseup", this.onMouseUp);
+
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+        }
+        this.animationId = null;
     }
 }

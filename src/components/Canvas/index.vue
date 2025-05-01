@@ -1,10 +1,23 @@
 <script setup lang="ts">
 import invariant from "tiny-invariant";
-import { onMounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, watchEffect } from "vue";
 import { Canvas } from "./Canvas";
+import { emitter, store } from "../../store";
 
 const canvas = ref<HTMLCanvasElement>();
 const canvasEngine = ref<Canvas>();
+
+const randomizeCanvas = () => {
+    canvasEngine.value?.randomize();
+};
+
+const clearCanvas = () => {
+    canvasEngine.value?.clear();
+};
+
+watchEffect(() => {
+    canvasEngine.value?.setCurrentColor(store.value.currentColor);
+});
 
 onMounted(() => {
     invariant(canvas.value, "expected canvas");
@@ -16,6 +29,20 @@ onMounted(() => {
         size: parentElement.offsetWidth,
         canvas: canvas.value,
     });
+
+    emitter.on("randomizeCanvas", randomizeCanvas);
+    emitter.on("clearCanvas", clearCanvas);
+
+});
+
+onUnmounted(() => {
+    if (canvasEngine.value) {
+        canvasEngine.value.unmount();
+        canvasEngine.value = undefined;
+    }
+
+    emitter.off("randomizeCanvas", randomizeCanvas);
+    emitter.off("clearCanvas", clearCanvas);
 });
 </script>
 
@@ -23,4 +50,9 @@ onMounted(() => {
     <canvas ref="canvas" class="canvas"></canvas>
 </template>
 
-<style scope></style>
+<style scope>
+.canvas {
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+</style>
