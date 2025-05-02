@@ -54,7 +54,7 @@ export class Canvas {
         this.ctx = ctx;
 
         this.resize();
-        this.grid = this.randomGrid();
+        this.grid = Canvas.randomGrid();
         this.setGrid(this.grid);
 
         this.render();
@@ -81,11 +81,11 @@ export class Canvas {
     }
 
     randomize() {
-        this.grid = this.randomGrid();
+        this.grid = Canvas.randomGrid();
         this.setGrid(this.grid);
     }
 
-    randomGrid() {
+    static randomGrid() {
         const grid = Canvas.createGrid();
         for (let y = MARGIN; y < SIZE - MARGIN; y++) {
             for (let x = MARGIN; x < SIZE - MARGIN; x++) {

@@ -8,6 +8,7 @@ import Input from "./components/primitives/Input.vue";
 import Discord from "./components/previews/Discord.vue";
 import Card from "./components/previews/Card.vue";
 import Footer from "./components/Footer.vue";
+import Gallery from "./components/Gallery.vue";
 </script>
 
 <template>
@@ -47,10 +48,21 @@ import Footer from "./components/Footer.vue";
                 <Button>Export</Button>
             </div>
         </div>
-        <div class="app__preview">
-            <Discord />
-            <Card />
+        <div class="app__preview view">
+            <h2>Preview</h2>
+            <div class="app__preview__grid">
+                <Discord />
+                <Card />
+            </div>
         </div>
+
+        <div class="app__gallery view">
+            <h2>Randomized Gallery</h2>
+            <div class="app__gallery__grid">
+                <Gallery />
+            </div>
+        </div>
+
 
         <Footer />
     </div>
@@ -99,10 +111,22 @@ import Footer from "./components/Footer.vue";
     gap: 0.5rem;
 }
 
-.app__preview {
+.app__preview,
+.app__gallery {
+    padding-top: 1.5rem;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.app__preview__grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1rem;
-    padding-top: 1.5rem;
+}
+
+.app__gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    gap: 0.5rem;
 }
 </style>
