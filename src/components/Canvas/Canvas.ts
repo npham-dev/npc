@@ -124,6 +124,7 @@ export class Canvas {
         // fill background
         this.ctx.fillStyle = PALETTE.BACKGROUND;
         this.ctx.fillRect(0, 0, this.renderSize, this.renderSize);
+        this.ctx.imageSmoothingEnabled = false;
 
         // fill in cells
         this.ctx.fillStyle = PALETTE.FILL;
@@ -250,6 +251,7 @@ export class Canvas {
         const ctx = canvas.getContext("2d");
         invariant(ctx, "expected canvas context");
 
+        ctx.imageSmoothingEnabled = false;
         const imageBitmap = await createImageBitmap(imageBlob);
         ctx.drawImage(imageBitmap, 0, 0, targetSize, targetSize);
         return {
@@ -286,7 +288,7 @@ export class Canvas {
         console.log("resized blobs")
 
         const converter = new PngIcoConverter();
-        const favicon = await converter.convert(resizedBlobs[4].blob);
+        const favicon = await converter.convert(resizedBlobs[1].blob); // use 32x32
         zipFolder.file("favicon.ico", favicon);
 
         saveAs(await zip.generateAsync({ type: "blob" }), "images.zip");
