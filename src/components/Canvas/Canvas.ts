@@ -251,13 +251,11 @@ export class Canvas {
         const ctx = canvas.getContext("2d");
         invariant(ctx, "expected canvas context");
 
-        ctx.imageSmoothingEnabled = false;
         const imageBitmap = await createImageBitmap(imageBlob);
+        ctx.imageSmoothingEnabled = false;
         ctx.drawImage(imageBitmap, 0, 0, targetSize, targetSize);
-        return {
-            size: targetSize,
-            blob: await Canvas.createBlob(canvas),
-        };
+
+        return Canvas.createBlob(canvas);
     }
 
     async export() {
@@ -267,28 +265,31 @@ export class Canvas {
 
         this.exporting = true;
 
-        // create 16x16, 32x32, 64x64, 128x128, 256x256, and 512x512 images
+        // I'm converting the current canvas into an image to be resized BECAUSE
+        // 1. what you see is what you get (in case I screwed up grid syncing)
+        // 2. using just the grid can cause lines to appear in the image 
+        //    if the grid size doesn't divide evenly into the target image size
         const imageBlob = await Canvas.createBlob(this.canvas);
-        const resizedBlobs = await Promise.all([
-            this.resizeImageBlob(imageBlob, 16),
-            this.resizeImageBlob(imageBlob, 32),
-            this.resizeImageBlob(imageBlob, 64),
-            this.resizeImageBlob(imageBlob, 128),
-            this.resizeImageBlob(imageBlob, 256),
-            this.resizeImageBlob(imageBlob, 512),
-        ]);
+
+        // create 16x16, 32x32, 64x64, 128x128, 256x256, and 512x512 images
+        // doing this explicitly because I want to fine-tune what we resize from
+        const resizedBlobs: Record<number, Blob> = {};
+        resizedBlobs[512] = await this.resizeImageBlob(imageBlob, 512);
+        resizedBlobs[256] = await this.resizeImageBlob(imageBlob, 256);
+        resizedBlobs[128] = await this.resizeImageBlob(resizedBlobs[512], 128);
+        resizedBlobs[64] = await this.resizeImageBlob(resizedBlobs[512], 64);
+        resizedBlobs[32] = await this.resizeImageBlob(resizedBlobs[512], 32);
+        resizedBlobs[16] = await this.resizeImageBlob(resizedBlobs[512], 16);
+        // @todo fix 16x16, looks thin
 
         const zip = new JSZip();
         const zipFolder = zip.folder("images");
         invariant(zipFolder, "expected zip folder");
-        resizedBlobs.forEach(({ size, blob }) => {
+        for(const [size, blob] of Object.entries(resizedBlobs)) {
             zipFolder.file(`${size}x${size}.png`, blob);
-        });
-
-        console.log("resized blobs")
-
+        }
         const converter = new PngIcoConverter();
-        const favicon = await converter.convert(resizedBlobs[1].blob); // use 32x32
+        const favicon = await converter.convert(resizedBlobs[64]); // use 64x64 for favicon
         zipFolder.file("favicon.ico", favicon);
 
         saveAs(await zip.generateAsync({ type: "blob" }), "images.zip");

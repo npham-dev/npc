@@ -16,10 +16,10 @@ type Input = {
 
 export class PngIcoConverter {
     async convert(input: Blob) {
-        const array = await this.convertToUint8Array([{ png: input }])
+        const array = await this.convertToUint8Array([{ png: input }]);
         return new Blob([array], { type: IcoMime });
     }
-    
+
     private async convertToUint8Array(inputs: Input[]) {
         const inLen = inputs.length;
         if (inLen > MaxFiles) {
@@ -85,11 +85,11 @@ export class PngIcoConverter {
     private to2Bytes(n: number) {
         return [n & 255, (n >> 8) & 255];
     }
-    
+
     private to4Bytes(n: number) {
         return [n & 255, (n >> 8) & 255, (n >> 16) & 255, (n >> 24) & 255];
     }
-    
+
     private sumInputLen(inputs: Input[]) {
         let total = 0;
         for (const i of inputs) {
