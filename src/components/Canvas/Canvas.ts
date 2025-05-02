@@ -1,5 +1,6 @@
 import invariant from "tiny-invariant";
 import type { Actions } from "../../store";
+import { eventBus } from "../../eventBus";
 
 type CanvasArgs = {
     size: number;
@@ -31,6 +32,8 @@ export class Canvas {
     private mouse = { x: 0, y: 0, hover: false, down: false };
     private currentColor = PALETTE.BACKGROUND;
 
+    // probably a much better way to sync the canvas, but I don't really care
+    // when we change the canvas internally, broadcast changes to state
     private updateGrid: Actions["updateGrid"];
     private setGrid: Actions["setGrid"];
 
@@ -85,12 +88,12 @@ export class Canvas {
         this.setGrid(this.grid);
     }
 
-    static randomGrid() {
+    static randomGrid(threshold = 0.5): PALETTE[][] {
         const grid = Canvas.createGrid();
         for (let y = MARGIN; y < SIZE - MARGIN; y++) {
             for (let x = MARGIN; x < SIZE - MARGIN; x++) {
                 const color =
-                    Math.random() > 0.5 ? PALETTE.BACKGROUND : PALETTE.FILL;
+                    Math.random() > threshold ? PALETTE.BACKGROUND : PALETTE.FILL;
                 grid[y][x] = color;
                 grid[y][SIZE - x - 1] = color;
             }
@@ -190,12 +193,18 @@ export class Canvas {
         this.mouse.down = true;
     };
 
+    // when we change the canvas externally, update the internal canvas
+    onSyncCanvas = (grid: PALETTE[][]) => {
+        this.grid = grid;
+    }
+
     mount() {
         this.canvas.addEventListener("mouseenter", this.onMouseEnter);
         this.canvas.addEventListener("mouseleave", this.onMouseLeave);
         this.canvas.addEventListener("mousemove", this.onMouseMove);
         this.canvas.addEventListener("mousedown", this.onMouseDown);
         this.canvas.addEventListener("mouseup", this.onMouseUp);
+        eventBus.on("syncCanvas", this.onSyncCanvas);
     }
 
     unmount() {
@@ -204,6 +213,7 @@ export class Canvas {
         this.canvas.removeEventListener("mousemove", this.onMouseMove);
         this.canvas.removeEventListener("click", this.onMouseMove);
         this.canvas.addEventListener("mouseup", this.onMouseUp);
+        eventBus.off("syncCanvas", this.onSyncCanvas);
 
         if (this.animationId) {
             cancelAnimationFrame(this.animationId);

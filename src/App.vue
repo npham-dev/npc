@@ -2,7 +2,7 @@
 import Button from "./components/primitives/Button.vue";
 import Canvas from "./components/Canvas/index.vue";
 import PaletteSelector from "./components/PaletteSelector.vue";
-import { emitter } from "./store";
+import { eventBus } from "./eventBus";
 import Checkbox from "./components/primitives/Checkbox.vue";
 import Input from "./components/primitives/Input.vue";
 import Discord from "./components/previews/Discord.vue";
@@ -24,10 +24,10 @@ import Gallery from "./components/Gallery.vue";
 
                 <div class="app__maker__panel__options view">
                     <div class="view">
-                        <Button @click="emitter.emit('randomizeCanvas')"
+                        <Button @click="eventBus.emit('randomizeCanvas')"
                             >Randomize</Button
                         >
-                        <Button @click="emitter.emit('clearCanvas')"
+                        <Button @click="eventBus.emit('clearCanvas')"
                             >Clear</Button
                         >
                     </div>

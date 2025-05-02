@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import invariant from "tiny-invariant";
 import { onMounted, onUnmounted, ref, shallowRef, watchEffect } from "vue";
-import { Canvas } from "./Canvas";
-import { emitter, store } from "../../store";
+import { Canvas, PALETTE } from "./Canvas";
+import { store } from "../../store";
+import { eventBus } from "../../eventBus";
 
 const canvas = ref<HTMLCanvasElement>();
 const canvasEngine = shallowRef<Canvas>();
+
+watchEffect(() => {
+    canvasEngine.value?.setCurrentColor(store.value.currentColor);
+});
 
 const randomizeCanvas = () => {
     canvasEngine.value?.randomize();
@@ -14,10 +19,6 @@ const randomizeCanvas = () => {
 const clearCanvas = () => {
     canvasEngine.value?.clear();
 };
-
-watchEffect(() => {
-    canvasEngine.value?.setCurrentColor(store.value.currentColor);
-});
 
 onMounted(() => {
     invariant(canvas.value, "expected canvas");
@@ -37,8 +38,8 @@ onMounted(() => {
         },
     });
 
-    emitter.on("randomizeCanvas", randomizeCanvas);
-    emitter.on("clearCanvas", clearCanvas);
+    eventBus.on("randomizeCanvas", randomizeCanvas);
+    eventBus.on("clearCanvas", clearCanvas);
 });
 
 onUnmounted(() => {
@@ -47,8 +48,8 @@ onUnmounted(() => {
         canvasEngine.value = undefined;
     }
 
-    emitter.off("randomizeCanvas", randomizeCanvas);
-    emitter.off("clearCanvas", clearCanvas);
+    eventBus.off("randomizeCanvas", randomizeCanvas);
+    eventBus.off("clearCanvas", clearCanvas);
 });
 </script>
 

@@ -1,6 +1,5 @@
 import { ref } from "vue";
 import { Canvas, PALETTE } from "./components/Canvas/Canvas";
-import mitt from "mitt";
 
 export type State = {
     currentColor: PALETTE;
@@ -34,8 +33,3 @@ export const store = ref<State & Actions>({
         store.value.currentColor = nextCurrentColor;
     },
 });
-
-export const emitter = mitt<{
-    randomizeCanvas: void;
-    clearCanvas: void;
-}>();
