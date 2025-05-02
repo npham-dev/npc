@@ -3,13 +3,11 @@ import Button from "./components/primitives/Button.vue";
 import Canvas from "./components/Canvas/index.vue";
 import PaletteSelector from "./components/PaletteSelector.vue";
 import { eventBus } from "./eventBus";
-import Checkbox from "./components/primitives/Checkbox.vue";
-import Input from "./components/primitives/Input.vue";
 import Discord from "./components/previews/Discord.vue";
 import Card from "./components/previews/Card.vue";
 import Footer from "./components/Footer.vue";
 import Gallery from "./components/Gallery.vue";
-import { RiDownloadLine } from "@remixicon/vue";
+import { RiDiceLine, RiDownloadLine, RiEraserLine } from "@remixicon/vue";
 </script>
 
 <template>
@@ -24,15 +22,23 @@ import { RiDownloadLine } from "@remixicon/vue";
                 </div>
 
                 <div class="app__maker__panel__options view">
+                    <PaletteSelector />
                     <div class="view">
                         <Button @click="eventBus.emit('randomizeCanvas')"
-                            >Randomize</Button
+                            >
+                            <RiDiceLine size="14px" />
+                            Random</Button
                         >
                         <Button @click="eventBus.emit('clearCanvas')"
-                            >Clear</Button
+                            >
+                            <RiEraserLine size="14px" />
+                            Clear</Button
                         >
+                        <Button @click="eventBus.emit('exportCanvas')">
+                            <RiDownloadLine size="14px" />
+                            Export
+                        </Button>
                     </div>
-                    <PaletteSelector />
                 </div>
             </div>
             <div class="app__maker__panel--right view">
@@ -46,29 +52,6 @@ import { RiDownloadLine } from "@remixicon/vue";
                 <Card />
             </div>
         </div>
-
-        <div class="app__export view">
-            <h2>Export</h2>
-            
-            <div class="app__export__panel view">
-                <Checkbox label="Export favicons" />
-                <div class="view section" :style="{ paddingLeft: '1rem' }">
-                    <Checkbox label="16x16" />
-                    <Checkbox label="32x32" />
-                </div>
-                <Checkbox label="Export app icons" />
-                <Checkbox label="Export manifest.json" />
-
-                <Input label="Size" />
-
-                <Button class="app__export__panel__button">
-                    <RiDownloadLine size="14px" />
-                    Export
-                </Button>
-            </div>
-        </div>
-
-
         <Footer />
     </div>
 </template>
@@ -76,7 +59,7 @@ import { RiDownloadLine } from "@remixicon/vue";
 <style scoped>
 .app {
     padding: 0 1rem;
-    max-width: 50rem;
+    max-width: 60rem;
     margin: 0 auto;
 }
 
@@ -112,12 +95,7 @@ import { RiDownloadLine } from "@remixicon/vue";
     gap: 0.5rem;
 }
 
-.section {
-    gap: 0.5rem;
-}
-
-.app__preview,
-.app__export {
+.app__preview {
     padding-top: 1.5rem;
     flex-direction: column;
     gap: 0.5rem;
@@ -127,14 +105,5 @@ import { RiDownloadLine } from "@remixicon/vue";
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1rem;
-}
-
-.app__export__panel {
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.app__export__panel__button {
-    width: fit-content;
 }
 </style>

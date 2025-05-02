@@ -6,7 +6,7 @@ import { store } from "../store";
 import { eventBus } from "../eventBus";
 import { RiDiceLine } from "@remixicon/vue";
 
-const RANDOM_AVATARS_COUNT = 100;
+const RANDOM_AVATARS_COUNT = 64;
 
 const createRandomAvatars = () => new Array(RANDOM_AVATARS_COUNT - 1)
         .fill(0)
@@ -38,20 +38,25 @@ const onClickAvatar = (grid: PALETTE[][]) => {
 <style scoped>
 .gallery {
     display: grid;
-    grid-template-columns: repeat(10, minmax(0, 1fr));
+    grid-template-columns: repeat(8, minmax(0, 1fr));
     gap: 0.5rem;
 }
 
 .gallery__randomize {
     display: grid;
     place-items: center;
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
     cursor: pointer;
 }
 
 .gallery__avatar {
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
     overflow: hidden;
     cursor: pointer;
+    transition: filter 100ms ease;
+}
+
+.gallery__avatar:hover {
+    filter: brightness(0.9);
 }
 </style>

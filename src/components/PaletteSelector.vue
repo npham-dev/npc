@@ -8,13 +8,12 @@ import { store } from "../store";
         <div class="palette__buttons view">
             <button
                 v-for="color of [PALETTE.BACKGROUND, PALETTE.FILL]"
-                :class="{
-                    palette__button: true,
-                    'palette__button--active': color === store.currentColor,
-                }"
+                class="palette__button"
                 :style="{ backgroundColor: color }"
                 @click="store.setCurrentColor(color)"
-            ></button>
+            >
+            <div class="palette__button__active" v-if="color === store.currentColor"></div>
+        </button>
         </div>
     </div>
 </template>
@@ -49,17 +48,21 @@ import { store } from "../store";
     width: 2rem;
     border: none;
     cursor: pointer;
-    border: 1px solid #ccc;
     border-radius: 0.5rem;
-    transition: shadow 100ms ease;
+    display: grid;
+    place-items: center;
+    transition: filter 100ms ease;
 }
 
-.palette__button:active {
-    border-color: dodgerblue;
+.palette__button:hover {
+    filter: brightness(0.9);
 }
 
-.palette__button--active {
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
-    border-color: dodgerblue;
+.palette__button__active {
+    height: 0.75rem;
+    width: 0.75rem;
+    background-color: white;
+    border-radius: 100%;
 }
+
 </style>

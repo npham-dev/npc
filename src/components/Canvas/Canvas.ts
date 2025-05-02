@@ -1,6 +1,8 @@
 import invariant from "tiny-invariant";
 import type { Actions } from "../../store";
 import { eventBus } from "../../eventBus";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 type CanvasArgs = {
     size: number;
@@ -36,6 +38,8 @@ export class Canvas {
     // when we change the canvas internally, broadcast changes to state
     private updateGrid: Actions["updateGrid"];
     private setGrid: Actions["setGrid"];
+
+    private exporting = false;
 
     constructor({ canvas, updateGrid, setGrid }: CanvasArgs) {
         this.canvas = canvas;
@@ -104,10 +108,13 @@ export class Canvas {
     resize() {
         this.canvas.width = this.renderSize;
         this.canvas.height = this.renderSize;
-        this.container.style.width = `${this.size}px`;
-        this.container.style.height = `${this.size}px`;
         this.canvas.style.width = `${this.size}px`;
         this.canvas.style.height = `${this.size}px`;
+        this.canvas.style.imageRendering = "pixelated";
+
+        // force container to be a square
+        this.container.style.width = `${this.size}px`;
+        this.container.style.height = `${this.size}px`;
     }
 
     render = () => {
@@ -221,7 +228,57 @@ export class Canvas {
         this.animationId = null;
     }
 
-    getHTMLCanvas() {
-        return this.canvas;
+    static createBlob(canvas: HTMLCanvasElement) {
+        return new Promise<Blob>((resolve) => {
+            canvas.toBlob((blob) => {
+                invariant(blob, "expected blob");
+                resolve(blob);
+            }, "image/png");
+        });
+    }
+
+    private async resizeImageBlob(imageBlob: Blob, targetSize: number) {
+        const canvas = document.createElement("canvas");
+        canvas.width = targetSize;
+        canvas.height = targetSize;
+        const ctx = canvas.getContext("2d");
+        invariant(ctx, "expected canvas context");
+
+        const imageBitmap = await createImageBitmap(imageBlob);
+        ctx.drawImage(imageBitmap, 0, 0, targetSize, targetSize);
+        return {
+            size: targetSize,
+            blob: await Canvas.createBlob(canvas)
+        };
+    }
+
+    async export() {
+        if(this.exporting) {
+            return;
+        }
+
+        this.exporting = true;
+
+        // create 16x16, 32x32, 64x64, 128x128, 256x256, and 512x512 images
+        const imageBlob = await Canvas.createBlob(this.canvas);
+        const resizedBlobs = await Promise.all([
+            this.resizeImageBlob(imageBlob, 16),
+            this.resizeImageBlob(imageBlob, 32),
+            this.resizeImageBlob(imageBlob, 64),
+            this.resizeImageBlob(imageBlob, 128),
+            this.resizeImageBlob(imageBlob, 256),
+            this.resizeImageBlob(imageBlob, 512),
+        ]);
+
+        const zip = new JSZip();
+        const zipFolder = zip.folder("images");
+        invariant(zipFolder, "expected zip folder");
+        resizedBlobs.forEach(({ size, blob }) => {
+            zipFolder.file(`${size}x${size}.png`, blob);
+        });
+
+        saveAs(await zip.generateAsync({ type: "blob" }), "images.zip");
+        
+        this.exporting = false;
     }
 }

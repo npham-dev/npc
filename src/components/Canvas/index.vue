@@ -20,6 +20,10 @@ const clearCanvas = () => {
     canvasEngine.value?.clear();
 };
 
+const exportCanvas = () => {
+    canvasEngine.value?.export();
+};
+
 onMounted(() => {
     invariant(canvas.value, "expected canvas");
 
@@ -40,6 +44,7 @@ onMounted(() => {
 
     eventBus.on("randomizeCanvas", randomizeCanvas);
     eventBus.on("clearCanvas", clearCanvas);
+    eventBus.on("exportCanvas", exportCanvas);
 });
 
 onUnmounted(() => {
@@ -50,6 +55,7 @@ onUnmounted(() => {
 
     eventBus.off("randomizeCanvas", randomizeCanvas);
     eventBus.off("clearCanvas", clearCanvas);
+    eventBus.off("exportCanvas", exportCanvas);
 });
 </script>
 
