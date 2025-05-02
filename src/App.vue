@@ -24,13 +24,11 @@ import { RiDiceLine, RiDownloadLine, RiEraserLine } from "@remixicon/vue";
                 <div class="app__maker__panel__options view">
                     <PaletteSelector />
                     <div class="view">
-                        <Button @click="eventBus.emit('randomizeCanvas')"
-                            >
+                        <Button @click="eventBus.emit('randomizeCanvas')">
                             <RiDiceLine size="14px" />
                             Random</Button
                         >
-                        <Button @click="eventBus.emit('clearCanvas')"
-                            >
+                        <Button @click="eventBus.emit('clearCanvas')">
                             <RiEraserLine size="14px" />
                             Clear</Button
                         >

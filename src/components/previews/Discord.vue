@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { RiCircleFill } from '@remixicon/vue';
-import { PALETTE } from '../Canvas/Canvas';
-import Avatar from '../Avatar.vue';
+import { RiCircleFill } from "@remixicon/vue";
+import { PALETTE } from "../Canvas/Canvas";
+import Avatar from "../Avatar.vue";
 
-const bgColor = PALETTE.FILL
+const bgColor = PALETTE.FILL;
 </script>
 
 <template>
@@ -19,11 +19,13 @@ const bgColor = PALETTE.FILL
             <h1 class="card__content__title">Nathan</h1>
             <div class="card__content__subtitle">
                 <p>natmfat</p>
-                <RiCircleFill size="6px"/>
+                <RiCircleFill size="6px" />
                 <p>he/him</p>
             </div>
             <div class="card__content_bio">
-                <a href="https://natmfat.com" target="_blank" rel="noreferrer">https://natmfat.com/</a>
+                <a href="https://natmfat.com" target="_blank" rel="noreferrer"
+                    >https://natmfat.com/</a
+                >
             </div>
         </div>
     </div>
@@ -38,7 +40,6 @@ const bgColor = PALETTE.FILL
     overflow: hidden;
     border: 1px solid #eee;
 }
-
 
 .card__background {
     align-items: center;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Avatar from '../Avatar.vue';
-import { PALETTE } from '../Canvas/Canvas';
+import Avatar from "../Avatar.vue";
+import { PALETTE } from "../Canvas/Canvas";
 
 const bgColor = PALETTE.FILL;
 </script>
@@ -10,7 +10,7 @@ const bgColor = PALETTE.FILL;
         <div class="card__avatar">
             <Avatar />
         </div>
-        <div class="card__content"> 
+        <div class="card__content">
             <h1>Nathan Pham</h1>
             <p>Software Engineer</p>
 
@@ -40,7 +40,7 @@ const bgColor = PALETTE.FILL;
     border-radius: 0.5rem;
     flex-direction: row;
     background-color: #eee;
-    align-items: center; 
+    align-items: center;
     padding: 0 3rem;
     gap: 3rem;
     position: relative;
@@ -92,5 +92,4 @@ const bgColor = PALETTE.FILL;
     font-size: 0.875rem;
     line-height: 1.3rem;
 }
-
 </style>

@@ -1,20 +1,26 @@
-// adapted from: 
+// adapted from:
 // https://github.com/datvm/PNG2ICOjs
 
 const MaxSize = 256; // 1 << 8
 const MaxFiles = 65536; // 1 << 16
 const FileHeaderSize = 6;
 const ImageHeaderSize = 16;
+const IcoMime = "image/x-icon";
 
 type Input = {
     png: Blob;
-    ignoreSize?: boolean
+    ignoreSize?: boolean;
     byteLength?: number;
     bpp?: number;
-}
+};
 
 export class PngIcoConverter {
-    async convertAsync(inputs:Input[]) {
+    async convert(input: Blob) {
+        const array = await this.convertToUint8Array([{ png: input }])
+        return new Blob([array], { type: IcoMime });
+    }
+    
+    private async convertToUint8Array(inputs: Input[]) {
         const inLen = inputs.length;
         if (inLen > MaxFiles) {
             throw new Error("TOO_MANY_FILES");
@@ -29,51 +35,62 @@ export class PngIcoConverter {
         // Image Headers & Data
         let imgPos = headersLen;
         for (let i = 0; i < inputs.length; i++) {
-            const currPos = FileHeaderSize + ImageHeaderSize * i, input = inputs[i];
+            const currPos = FileHeaderSize + ImageHeaderSize * i,
+                input = inputs[i];
             const blob = input.png;
-            const img = await this.loadImageAsync(blob)
-            const w = img.naturalWidth, h = img.naturalHeight;
-            if (!input.ignoreSize &&
-                (w > MaxSize || h > MaxSize)) {
+            const img = await this.loadImage(blob);
+            const w = img.naturalWidth,
+                h = img.naturalHeight;
+            if (!input.ignoreSize && (w > MaxSize || h > MaxSize)) {
                 throw new Error("INVALID_SIZE");
             }
             // Header
-            arr.set([
-                w > MaxSize ? 0 : w,
-                h > MaxSize ? 0 : h,
-                0,
-                0,
-                0, 0,
-                ...(input.bpp ? this.to2Bytes(input.bpp) : [0, 0]),
-                ...this.to4Bytes(blob.size),
-                ...this.to4Bytes(imgPos),
-            ], currPos);
+            arr.set(
+                [
+                    w > MaxSize ? 0 : w,
+                    h > MaxSize ? 0 : h,
+                    0,
+                    0,
+                    0,
+                    0,
+                    ...(input.bpp ? this.to2Bytes(input.bpp) : [0, 0]),
+                    ...this.to4Bytes(blob.size),
+                    ...this.to4Bytes(imgPos),
+                ],
+                currPos,
+            );
             // Image
-            const buffer = input.png instanceof ArrayBuffer ? input.png : await input.png.arrayBuffer();
+            const buffer =
+                input.png instanceof ArrayBuffer
+                    ? input.png
+                    : await input.png.arrayBuffer();
             arr.set(new Uint8Array(buffer), imgPos);
             imgPos += blob.size;
         }
         return arr;
     }
-    loadImageAsync(png: Blob): Promise<HTMLImageElement> {
+
+    private loadImage(png: Blob): Promise<HTMLImageElement> {
         return new Promise((resolve, reject) => {
             const img = new Image();
             img.onload = () => {
                 URL.revokeObjectURL(img.src);
-                resolve(img)
+                resolve(img);
             };
             img.onerror = () => reject("INVALID_IMAGE");
             img.src = URL.createObjectURL(png);
-
         });
     }
-    to2Bytes(n: number) {
+
+    private to2Bytes(n: number) {
         return [n & 255, (n >> 8) & 255];
     }
-    to4Bytes(n: number) {
+    
+    private to4Bytes(n: number) {
         return [n & 255, (n >> 8) & 255, (n >> 16) & 255, (n >> 24) & 255];
     }
-    sumInputLen(inputs: Input[]) {
+    
+    private sumInputLen(inputs: Input[]) {
         let total = 0;
         for (const i of inputs) {
             const png = i.png;

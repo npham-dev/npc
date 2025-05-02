@@ -1,10 +1,8 @@
 <template>
     <footer>
-        <a
-        href="https://natmfat.com"
-        target="_blank"
-        rel="noreferrer"
-        >natmfat.com</a>
+        <a href="https://natmfat.com" target="_blank" rel="noreferrer"
+            >natmfat.com</a
+        >
     </footer>
 </template>
 
@@ -20,8 +18,8 @@ footer {
 }
 
 a {
- color: dodgerblue;
- text-decoration: none;
+    color: dodgerblue;
+    text-decoration: none;
 }
 
 a:hover {

@@ -8,11 +8,8 @@ import { RiDiceLine } from "@remixicon/vue";
 
 const RANDOM_AVATARS_COUNT = 64;
 
-const createRandomAvatars = () => new Array(RANDOM_AVATARS_COUNT - 1)
-        .fill(0)
-        .map(() =>
-            Canvas.randomGrid(),
-        )
+const createRandomAvatars = () =>
+    new Array(RANDOM_AVATARS_COUNT - 1).fill(0).map(() => Canvas.randomGrid());
 
 const randomAvatars = ref(createRandomAvatars());
 
@@ -22,7 +19,7 @@ const onClickRandom = () => {
 
 const onClickAvatar = (grid: PALETTE[][]) => {
     store.value.setGrid(grid);
-    eventBus.emit("syncCanvas", grid)
+    eventBus.emit("syncCanvas", grid);
 };
 </script>
 
@@ -31,7 +28,12 @@ const onClickAvatar = (grid: PALETTE[][]) => {
         <div class="gallery__randomize interactive" @click="onClickRandom">
             <RiDiceLine />
         </div>
-        <Avatar class="gallery__avatar" v-for="grid in randomAvatars" :grid="grid" @click="onClickAvatar(grid)" />
+        <Avatar
+            class="gallery__avatar"
+            v-for="grid in randomAvatars"
+            :grid="grid"
+            @click="onClickAvatar(grid)"
+        />
     </div>
 </template>
 

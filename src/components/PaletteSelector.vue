@@ -12,8 +12,11 @@ import { store } from "../store";
                 :style="{ backgroundColor: color }"
                 @click="store.setCurrentColor(color)"
             >
-            <div class="palette__button__active" v-if="color === store.currentColor"></div>
-        </button>
+                <div
+                    class="palette__button__active"
+                    v-if="color === store.currentColor"
+                ></div>
+            </button>
         </div>
     </div>
 </template>
@@ -64,5 +67,4 @@ import { store } from "../store";
     background-color: white;
     border-radius: 100%;
 }
-
 </style>

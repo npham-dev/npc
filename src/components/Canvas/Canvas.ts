@@ -3,6 +3,7 @@ import type { Actions } from "../../store";
 import { eventBus } from "../../eventBus";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import { PngIcoConverter } from "./png2ico";
 
 type CanvasArgs = {
     size: number;
@@ -97,7 +98,9 @@ export class Canvas {
         for (let y = MARGIN; y < SIZE - MARGIN; y++) {
             for (let x = MARGIN; x < SIZE - MARGIN; x++) {
                 const color =
-                    Math.random() > threshold ? PALETTE.BACKGROUND : PALETTE.FILL;
+                    Math.random() > threshold
+                        ? PALETTE.BACKGROUND
+                        : PALETTE.FILL;
                 grid[y][x] = color;
                 grid[y][SIZE - x - 1] = color;
             }
@@ -203,7 +206,7 @@ export class Canvas {
     // when we change the canvas externally, update the internal canvas
     onSyncCanvas = (grid: PALETTE[][]) => {
         this.grid = grid;
-    }
+    };
 
     mount() {
         this.canvas.addEventListener("mouseenter", this.onMouseEnter);
@@ -241,6 +244,9 @@ export class Canvas {
         const canvas = document.createElement("canvas");
         canvas.width = targetSize;
         canvas.height = targetSize;
+        canvas.style.width = `${targetSize}px`;
+        canvas.style.height = `${targetSize}px`;
+        canvas.style.imageRendering = "pixelated";
         const ctx = canvas.getContext("2d");
         invariant(ctx, "expected canvas context");
 
@@ -248,12 +254,12 @@ export class Canvas {
         ctx.drawImage(imageBitmap, 0, 0, targetSize, targetSize);
         return {
             size: targetSize,
-            blob: await Canvas.createBlob(canvas)
+            blob: await Canvas.createBlob(canvas),
         };
     }
 
     async export() {
-        if(this.exporting) {
+        if (this.exporting) {
             return;
         }
 
@@ -277,8 +283,14 @@ export class Canvas {
             zipFolder.file(`${size}x${size}.png`, blob);
         });
 
+        console.log("resized blobs")
+
+        const converter = new PngIcoConverter();
+        const favicon = await converter.convert(resizedBlobs[4].blob);
+        zipFolder.file("favicon.ico", favicon);
+
         saveAs(await zip.generateAsync({ type: "blob" }), "images.zip");
-        
+
         this.exporting = false;
     }
 }
