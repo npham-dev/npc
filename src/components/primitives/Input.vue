@@ -17,13 +17,10 @@ defineProps<{
 .input {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    width: 100%;
+    gap: 0.75rem;
 }
 
 label {
-    width: 4rem;
-    text-align: right;
     flex-shrink: 0;
 }
 
@@ -31,8 +28,5 @@ input {
     border-radius: 0.5rem;
     padding: 0 0.75rem;
     height: 2rem;
-    width: 100%;
-    flex-shrink: 1;
-    flex-grow: 1;
 }
 </style>

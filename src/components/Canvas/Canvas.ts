@@ -220,4 +220,8 @@ export class Canvas {
         }
         this.animationId = null;
     }
+
+    getHTMLCanvas() {
+        return this.canvas;
+    }
 }

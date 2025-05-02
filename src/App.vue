@@ -9,6 +9,7 @@ import Discord from "./components/previews/Discord.vue";
 import Card from "./components/previews/Card.vue";
 import Footer from "./components/Footer.vue";
 import Gallery from "./components/Gallery.vue";
+import { RiDownloadLine } from "@remixicon/vue";
 </script>
 
 <template>
@@ -35,17 +36,7 @@ import Gallery from "./components/Gallery.vue";
                 </div>
             </div>
             <div class="app__maker__panel--right view">
-                <Checkbox label="Export favicons" />
-                <div class="view section" :style="{ paddingLeft: '1rem' }">
-                    <Checkbox label="16x16" />
-                    <Checkbox label="32x32" />
-                </div>
-                <Checkbox label="Export app icons" />
-                <Checkbox label="Export manifest.json" />
-
-                <Input label="Size" />
-
-                <Button>Export</Button>
+                <Gallery />
             </div>
         </div>
         <div class="app__preview view">
@@ -56,10 +47,24 @@ import Gallery from "./components/Gallery.vue";
             </div>
         </div>
 
-        <div class="app__gallery view">
-            <h2>Randomized Gallery</h2>
-            <div class="app__gallery__grid">
-                <Gallery />
+        <div class="app__export view">
+            <h2>Export</h2>
+            
+            <div class="app__export__panel view">
+                <Checkbox label="Export favicons" />
+                <div class="view section" :style="{ paddingLeft: '1rem' }">
+                    <Checkbox label="16x16" />
+                    <Checkbox label="32x32" />
+                </div>
+                <Checkbox label="Export app icons" />
+                <Checkbox label="Export manifest.json" />
+
+                <Input label="Size" />
+
+                <Button class="app__export__panel__button">
+                    <RiDownloadLine size="14px" />
+                    Export
+                </Button>
             </div>
         </div>
 
@@ -112,7 +117,7 @@ import Gallery from "./components/Gallery.vue";
 }
 
 .app__preview,
-.app__gallery {
+.app__export {
     padding-top: 1.5rem;
     flex-direction: column;
     gap: 0.5rem;
@@ -124,9 +129,12 @@ import Gallery from "./components/Gallery.vue";
     gap: 1rem;
 }
 
-.app__gallery__grid {
-    display: grid;
-    grid-template-columns: repeat(10, minmax(0, 1fr));
+.app__export__panel {
+    flex-direction: column;
     gap: 0.5rem;
+}
+
+.app__export__panel__button {
+    width: fit-content;
 }
 </style>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import invariant from "tiny-invariant";
 import { onMounted, onUnmounted, ref, shallowRef, watchEffect } from "vue";
-import { Canvas, PALETTE } from "./Canvas";
+import { Canvas } from "./Canvas";
 import { store } from "../../store";
 import { eventBus } from "../../eventBus";
 

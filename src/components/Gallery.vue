@@ -6,12 +6,12 @@ import { store } from "../store";
 import { eventBus } from "../eventBus";
 import { RiDiceLine } from "@remixicon/vue";
 
-const RANDOM_AVATARS_COUNT = 99;
+const RANDOM_AVATARS_COUNT = 100;
 
-const createRandomAvatars = () => new Array(RANDOM_AVATARS_COUNT)
+const createRandomAvatars = () => new Array(RANDOM_AVATARS_COUNT - 1)
         .fill(0)
         .map(() =>
-            Canvas.randomGrid(0.5),
+            Canvas.randomGrid(),
         )
 
 const randomAvatars = ref(createRandomAvatars());
@@ -27,22 +27,30 @@ const onClickAvatar = (grid: PALETTE[][]) => {
 </script>
 
 <template>
-    <div class="randomize interactive" @click="onClickRandom">
-        <RiDiceLine />
+    <div class="gallery">
+        <div class="gallery__randomize interactive" @click="onClickRandom">
+            <RiDiceLine />
+        </div>
+        <Avatar class="gallery__avatar" v-for="grid in randomAvatars" :grid="grid" @click="onClickAvatar(grid)" />
     </div>
-    <Avatar class="avatar" v-for="grid in randomAvatars" :grid="grid" @click="onClickAvatar(grid)" />
 </template>
 
 <style scoped>
-.randomize {
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+.gallery__randomize {
     display: grid;
     place-items: center;
-    border-radius: 0.5rem;
+    border-radius: 0.25rem;
     cursor: pointer;
 }
 
-.avatar {
-    border-radius: 0.5rem;
+.gallery__avatar {
+    border-radius: 0.25rem;
     overflow: hidden;
     cursor: pointer;
 }
