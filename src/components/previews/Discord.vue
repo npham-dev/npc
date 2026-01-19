@@ -18,13 +18,13 @@ const bgColor = PALETTE.FILL;
         <div class="card__content view">
             <h1 class="card__content__title">Nathan</h1>
             <div class="card__content__subtitle">
-                <p>natmfat</p>
+                <p>npham-dev</p>
                 <RiCircleFill size="6px" />
                 <p>he/him</p>
             </div>
             <div class="card__content_bio">
-                <a href="https://natmfat.com" target="_blank" rel="noreferrer"
-                    >https://natmfat.com/</a
+                <a href="https://npham.dev" target="_blank" rel="noreferrer"
+                    >https://npham.dev/</a
                 >
             </div>
         </div>

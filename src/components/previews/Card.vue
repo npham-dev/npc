@@ -17,7 +17,7 @@ const bgColor = PALETTE.FILL;
             <div class="card__content__pii">
                 <p>(000) 000 - 0000</p>
                 <p>A location in the world</p>
-                <p>natmfat@gmail.com</p>
+                <p>example@gmail.com</p>
             </div>
         </div>
         <div class="card__graphic">

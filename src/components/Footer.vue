@@ -1,7 +1,7 @@
 <template>
     <footer>
-        <a href="https://natmfat.com" target="_blank" rel="noreferrer"
-            >natmfat.com</a
+        <a href="https://npham.dev" target="_blank" rel="noreferrer"
+            >npham-dev</a
         >
     </footer>
 </template>
